@@ -1,0 +1,16 @@
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+#weatherContainer{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    /* background-color: aqua; */
+}
+
+
+#navBar{
+    margin-left: auto;
+}
