@@ -31,33 +31,25 @@
                 </form>
                 <div class="col-sm">
                     <p>
-                    <h1 class="alert alert-dark" role="alert">Previous Searched</h1>
+                    <h1 class="alert alert-warning" role="alert">Previous Searched</h1>
                     <p> test Previous searched city</p>
                     </p>
                 </div>
             </div>
             <class class="col-md-8">
                 <p>
-                <h1 class="alert alert-dark" role="alert">Today's Forecast</h1>
-                <p id="result"></p>
-                <p id="uvIndex">
-                <p>UV Index Results:</p>
-                <p> Light = 0-2</p>
-                <p>Moderate = 3-5</p>
-                <p>High = 5+</p>
-                </p>
-                </p>
+                <h1 class="alert alert-warning" role="alert">Today's Forecast</h1>
+                <h3 id="result">test</h3>
 
 
-               
                 <div class="col-sm">
                     <p>
-                    <h1 class="alert alert-dark" role="alert">5 Day Forecast:</h1>
-                    <p id="forecast">Forecast 1</p>
+                    <h1 class="alert alert-warning" role="alert">5 Day Forecast:</h1>
+                    <p id="forecast"></p>
                     </p>
                 </div>
-                <section id=weather></section>
-                <section id=forecast></section>
+                <div id=weather></div>
+
 
             </class>
         </div>
@@ -101,6 +93,10 @@
         `
                 })
                 .catch(err => { console.log(err) })
+
+
+
+
             axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
                 .then(res => {
                     let forecast = res.data.list
