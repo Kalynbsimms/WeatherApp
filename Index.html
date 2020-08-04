@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <!-- Image and text -->
+    <!-- Image and text NavBar-->
     <nav id=navBar class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">
             <img src="https://image.flaticon.com/icons/svg/56/56131.svg" width="30" height="30"
@@ -21,12 +21,16 @@
         </a>
     </nav>
 
+    <!-- Container holding the weather information -->
     <div id=weatherContainer class="container">
         <div class="row">
             <div class="col-md-4">
                 <form class="form-inline my-2 my-lg-0">
+                    <!-- Field to input the city -->
                     <input id="city" class="form-control mr-sm-2" type="search" placeholder="Enter City Name"
                         aria-label="Search">
+
+                        <!--  Search Button-->
                     <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
                 <div class="col-sm">
@@ -75,11 +79,16 @@
         crossorigin="anonymous"></script>
 
     <script>
+
+        let searches = []
+        let uvResults = 0
+
         document.getElementById('search').addEventListener('click', event => {
             event.preventDefault()
             // console.log('hi')
 
             let city = document.getElementById('city').value
+            console.log(city)
 
             axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
 
