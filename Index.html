@@ -38,8 +38,8 @@
                 <div class="col-sm">
                     <p>
                     <h1 id="previous" class="alert alert-warning" role="alert">Previous Searched</h1>
-                    <p> test Previous searched city</p>
                     </p>
+                    <div id="previousContainer"></div>
                     <p>
                     <h1 class="alert alert-warning" role="alert">Today:</h1>
 
@@ -65,7 +65,7 @@
                 <div class="col-sm">
                     <p>
                     <h1 class="alert alert-warning" role="alert">5 Day Forecast:</h1>
-                    <p id="forecast">test</p>
+                    <p id="forecast"></p>
                     </p>
                 </div>
                 <div id=weather></div>
@@ -96,25 +96,26 @@
 
     <script>
 
-        let searches = []
+        let searches = JSON.parse(localStorage.getItem('city')) || []
+        console.log(searches)
 
 
+        for (let i = 0; i < searches.length; i++) {
+            let searchElem = document.createElement('button')
+            searchElem.className = 'previousButton'
 
-
-        document.getElementById('search').addEventListener('click', event => {
-            event.preventDefault()
-            console.log('hi')
-
-
-
-
-
+            searchElem.textContent = searches[i]
+            document.getElementById('previousContainer').append(searchElem)
+        }
+        function citySearch(city) {
+            // Start of the search function process
             // Code to pull the cities current information
-            let city = document.getElementById('city').value
             console.log(city)
+            searches.push(city)
+            localStorage.setItem('city', JSON.stringify(searches))
 
             axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
-                        
+
                 .then(res => {
                     console.log(res.data)
                     document.getElementById('results').innerHTML = `
@@ -128,7 +129,7 @@
 
 
 
-                    // This is the 5 day forecast information
+            // This is the 5 day forecast information
             axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
                 .then(res => {
 
@@ -137,7 +138,7 @@
                     for (let i = 5; i < forecast.length; i += 8) {
                         console.log(forecast[i])
                         let forecastElem = document.createElement('div')
-                        
+
                         forecastElem.innerHTML = `
                         <h1>${forecast[i].dt_txt}</h1>
                         <h2>Weather: ${forecast[i].weather[0].description}</h2>
@@ -153,55 +154,74 @@
                 })
 
 
-        //  This is the UV Index information
-        
-        let lon
-        let lat
-        axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
-            .then(res => {
-                lon = res.data.coord.lon
-                lat = res.data.coord.lat
-                console.log('$$$$$$$$$$')
-                console.log(res.data)
-                //                 document.getElementById('weather').innerHTML = `
-                //   <h1>${res.data.name}</h1>
-                //   <h2>Weather: ${res.data.weather[0].description}</h2>
-                //   <h3>Temperature: ${res.data.main.temp}</h3>
-                //   <h3>Humidity: ${res.data.main.humidity}</h3>
-                //   <h3>Wind Speed: ${res.data.wind.speed}</h3>
-                // `
-                axios.get("http://api.openweathermap.org/data/2.5/uvi?appid=1dd25ac798a84daed3b612ef4b3c9a3e&lat=" + lat + "&lon=" + lon)
-                    .then(res => {
-                        console.log("***************")
-                        console.log(res.data)
-                        event.preventDefault()
-                        let uv = res.data.value
-                        uvResulter = uv
-                        document.getElementById('uvIndex').innerHTML = `
+            //  This is the UV Index information
+
+            let lon
+            let lat
+            axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
+                .then(res => {
+                    lon = res.data.coord.lon
+                    lat = res.data.coord.lat
+                    console.log('$$$$$$$$$$')
+                    console.log(res.data)
+                    //                 document.getElementById('weather').innerHTML = `
+                    //   <h1>${res.data.name}</h1>
+                    //   <h2>Weather: ${res.data.weather[0].description}</h2>
+                    //   <h3>Temperature: ${res.data.main.temp}</h3>
+                    //   <h3>Humidity: ${res.data.main.humidity}</h3>
+                    //   <h3>Wind Speed: ${res.data.wind.speed}</h3>
+                    // `
+                    axios.get("http://api.openweathermap.org/data/2.5/uvi?appid=1dd25ac798a84daed3b612ef4b3c9a3e&lat=" + lat + "&lon=" + lon)
+                        .then(res => {
+                            console.log("***************")
+                            console.log(res.data)
+                            event.preventDefault()
+                            let uv = res.data.value
+                            uvResulter = uv
+                            document.getElementById('uvIndex').innerHTML = `
             <p> UV Index: ${res.data.value} </p>
             `
-                        if (uv >= 0 && uv <= 2) { document.getElementById("uvIndex").style.backgroundColor = "green" }
-                        else if (uv >= 3 && uv <= 5) { document.getElementById("uvIndex").style.backgroundColor = "yellow" }
-                        else { document.getElementById("uvIndex").style.backgroundColor = "red" }
-                    })
-                    .catch(err => { console.log(err) })
-            })
-            .catch(err => { console.log(err) })
+                            if (uv >= 0 && uv <= 2) { document.getElementById("uvIndex").style.backgroundColor = "green" }
+                            else if (uv >= 3 && uv <= 5) { document.getElementById("uvIndex").style.backgroundColor = "yellow" }
+                            else { document.getElementById("uvIndex").style.backgroundColor = "red" }
+                        })
+                        .catch(err => { console.log(err) })
+                })
+                .catch(err => { console.log(err) })
+            // End of search function process
+
+        }
+
+
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.className == 'previousButton') {
+                console.log(e.target.textContent)
+                //fires search function 
+                citySearch(e.target.textContent)
+            }
+        });
+
+        document.getElementById('search').addEventListener('click', event => {
+            event.preventDefault()
+            console.log('hi')
+
+            //fires search function 
+            let city = document.getElementById('city').value
+            citySearch(city)
+
+             let searchElem = document.createElement('button')
+            searchElem.className = 'previousButton'
+
+            searchElem.textContent = searches[i]
+            document.getElementById('previousContainer').append(searchElem)
+
+
 
 
         })
 
 
-    //     axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=1dd25ac798a84daed3b612ef4b3c9a3e`)
-    //         .then(res => {
-    //             let results = res.data.list
 
-    //             document.getElementById('results').innerHTML = `
-    //    <div>
-    //         <h3 id="searchedCity" class="alert alert-primary" role="alert">${res.data.list}</h1>
-    //         <h3 id="date">${moment().format('l')}</h2>
-    //     </div>`
-            // })
 
 
 
